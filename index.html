@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+  <style>
+    body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #2c3e50;
+    color: #ecf0f1;
+}
+
+.container {
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(3, 100px);
+    gap: 5px;
+    margin-bottom: 20px;
+    background-color: #34495e;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.cell {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2em;
+    background-color: #2c3e50;
+    border: 2px solid #1abc9c;
+    color: #ecf0f1;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-radius: 8px;
+}
+
+.cell:hover {
+    background-color: #1abc9c;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    cursor: pointer;
+    background-color: #e74c3c;
+    border: none;
+    color: #ecf0f1;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #c0392b;
+}
+
+#message {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+  </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tic Tac Toe</h1>
+        <div class="board">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+        </div>
+        <button id="reset">Reset Game</button>
+        <p id="message"></p>
+    </div>
+    <script>
+        const cells = document.querySelectorAll('.cell');
+const message = document.getElementById('message');
+const resetButton = document.getElementById('reset');
+
+let currentPlayer = 'X';
+let board = Array(9).fill(null);
+
+const winningCombinations = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+    [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+    [0, 4, 8], [2, 4, 6] // Diagonals
+];
+
+function checkWinner() {
+    for (const combination of winningCombinations) {
+        const [a, b, c] = combination;
+        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+            return board[a];
+        }
+    }
+    return board.every(cell => cell) ? 'Tie' : null;
+}
+
+function handleClick(event) {
+    const cellIndex = event.target.dataset.index;
+    if (!board[cellIndex]) {
+        board[cellIndex] = currentPlayer;
+        event.target.textContent = currentPlayer;
+        const winner = checkWinner();
+        if (winner) {
+            message.textContent = winner === 'Tie' ? 'It\'s a tie!' : `${winner} wins!`;
+            cells.forEach(cell => cell.removeEventListener('click', handleClick));
+        } else {
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        }
+    }
+}
+
+function resetGame() {
+    board.fill(null);
+    cells.forEach(cell => cell.textContent = '');
+    message.textContent = '';
+    currentPlayer = 'X';
+    cells.forEach(cell => cell.addEventListener('click', handleClick));
+}
+
+cells.forEach(cell => cell.addEventListener('click', handleClick));
+resetButton.addEventListener('click', resetGame);
+
+    </script>
+</body>
+</html>
